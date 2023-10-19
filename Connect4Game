@@ -1,0 +1,160 @@
+# function to print the board upside down
+def print_board(board):
+    # traverse the board in reverse order
+    for row in board[::-1]:
+        # print each element in the row
+        for i in row:
+            print(i, end=' ')
+        print()
+
+
+# function to initialize the board
+def initialize_board(height, length):
+    # fill the board with '-'
+    board = []
+    # traverse the board
+    for i in range(height):
+        # append a new row
+        board.append([])
+        # fill the row with '-'
+        for j in range(length):
+            board[i].append('-')
+    return board
+
+
+# function to insert a chip into the board
+def insert_chip(board, col, chip_type):
+    # traverse the board
+    for row in board:
+        # check if there is empty space in the column
+        if row[col] == '-':
+            # insert the chip
+            row[col] = chip_type
+            break
+
+
+# function to check if there are 4 in a row horizontally
+def check_horizontal(board, col, row, chip_type):
+    # initialize count to 0
+    count = 0
+
+    # traverse the board
+    for i in range(col - 3, col + 4):
+        # if the index is out of bounds, continue
+        if i < 0 or i >= len(board[0]):
+            continue
+
+        # check if the chip is the same type
+        if board[row][i] == chip_type:
+            count += 1
+        else:
+            count = 0
+
+        # check if there are 4 in a row horizontally
+        if count == 4:
+            return True
+    return False
+
+
+# function to check if there are 4 in a row vertically
+def check_vertical(board, col, row, chip_type):
+    # initialize count to 0
+    count = 0
+
+    # traverse the board
+    for i in range(row - 3, row + 4):
+        # check if the index is out of bounds
+        if i < 0 or i >= len(board):
+            continue
+
+        # check if the chip is the same type
+        if board[i][col] == chip_type:
+            count += 1
+        else:
+            count = 0
+
+        # if there are 4 in a row vertically, return True
+        if count == 4:
+            return True
+    return False
+
+
+# function to check if the chip_type won
+def check_if_winner(board, col, row, chip_type):
+    # check horizontal
+    if check_horizontal(board, col, row, chip_type):
+        return True
+    # check vertical
+    if check_vertical(board, col, row, chip_type):
+        return True
+    return False
+
+
+# main function
+def main():
+    # get the height and length of the board
+    height = int(input("What would you like the height of the board to be? "))
+    length = int(input("What would you like the length of the board to be? "))
+
+    # initialize the board
+    board = initialize_board(height, length)
+
+    # display the board
+    print_board(board)
+
+    # display the players and their chips
+    print("Player 1: x")
+    print("Player 2: o")
+    player = 1
+
+    # loop until the game is over
+    while True:
+
+        # check if it is player 1's turn
+        if player == 1:
+            # get the column from the user
+            col = int(input("Player 1: Which column would you like to choose? "))
+            # insert the chip
+            insert_chip(board, col, 'x')
+
+            # display the board
+            print_board(board)
+
+            # check if player 1 won
+            if check_if_winner(board, col, 0, 'x'):
+                print("Player 1 wins!")
+                break
+
+            # change the player
+            player = 2
+
+        # check if it is player 2's turn
+        else:
+            # get the column from the user
+            col = int(input("Player 2: Which column would you like to choose? "))
+
+            # insert the chip
+            insert_chip(board, col, 'o')
+
+            # display the board
+            print_board(board)
+
+            # check if player 2 won
+            if check_if_winner(board, col, 0, 'o'):
+                print("Player 2 wins!")
+                break
+
+            # change the player
+            player = 1
+
+        # check if the board is full
+        for row in board:
+            if '-' in row:
+                break
+        else:
+            print("Draw. Nobody Wins.")
+            break
+
+
+# call the main function
+main()
